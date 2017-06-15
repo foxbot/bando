@@ -1,0 +1,21 @@
+opcode table:
+
+op | slave<->master | desc / json
+
+0 ; s->m ; identify with passphrase
+{
+	"op": 0,
+	"d": {
+		"key": "abc"
+	}
+}
+
+1 ; m->s ; ready / authenticated
+{
+	"op": 1
+}
+
+2 ; m->s ; goodbye bad auth
+{
+	"op": 2
+}
