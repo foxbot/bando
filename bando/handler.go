@@ -8,30 +8,33 @@ import (
 	"github.com/mitchellh/mapstructure"
 )
 
-func handleMessage(conn net.Conn, m message) {
-	switch m.op {
+func handleMessage(conn net.Conn, m Message) {
+	switch m.Op {
 	case 0:
-		var i identify
-		err := mapstructure.Decode(m.d, &i)
+		var i Identify
+		err := mapstructure.Decode(m.Data, &i)
 		if err != nil {
 			log.Println(err)
 			conn.Close()
+			log.Println("rejected connection from", conn.RemoteAddr().String(), "-", err)
 		}
-		if i.key != conf.Key {
-			resp := message { op: 2 }
+		if i.Key != conf.Key {
+			resp := Message { Op: 2 }
 			sendResp(conn, resp)
 			conn.Close()
-		} else if i.key == conf.Key {
-			resp := message { op: 1 }
+			log.Println("rejected connection from", conn.RemoteAddr().String(), "- invalid key")
+		} else if i.Key == conf.Key {
+			resp := Message { Op: 1 }
 			sendResp(conn, resp)
+			log.Println("accepted connection from", conn.RemoteAddr().String())
 		}
-	default: 
-		resp := message { op: 3 }
+	default:
+		resp := Message { Op: 3 }
 		sendResp(conn, resp)
 	}
 }
 
-func sendResp(conn net.Conn, resp message) {
+func sendResp(conn net.Conn, resp Message) {
 	json, err := json.Marshal(resp)
 	if err != nil {
 		log.Println(err)

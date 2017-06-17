@@ -19,6 +19,7 @@ func serve() {
 			log.Println(err)
 			continue
 		}
+		log.Println("new conn from", sock.RemoteAddr().String())
 		go requestLoop(sock)
 	}
 }
@@ -26,16 +27,18 @@ func serve() {
 func requestLoop(conn net.Conn) {
 	for {
 		buf := make([]byte, 1024)
-		_, err := conn.Read(buf)
+		n, err := conn.Read(buf)
 		if err != nil {
 			conn.Close()
+			log.Println("read err")
 			log.Println(err)
 			return
 		}
-		var m message
-		err = json.Unmarshal(buf, &m)
+		var m Message
+		err = json.Unmarshal(buf[:n], &m)
 		if err != nil {
 			conn.Close()
+			log.Println("unmarshal err ;", string(buf))
 			log.Println(err)
 			return
 		}

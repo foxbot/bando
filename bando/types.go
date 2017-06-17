@@ -1,13 +1,13 @@
 package bando
 
-type message struct {
-	op int
-	d interface{}
+type Message struct {
+	Op int `json:"op"`
+	Data interface{} `json:"data"`
 }
 
 // receive
-type identify struct {
-	key string
+type Identify struct {
+	Key string
 }
 
 // send
