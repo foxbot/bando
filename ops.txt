@@ -1,21 +1,71 @@
-opcode table:
+Opcode Reference:
 
-op | slave<->master | desc / json
+General Packet
+--------------
 
-0 ; s->m ; identify with passphrase
-{
-	"op": 0,
-	"d": {
-		"key": "abc"
-	}
-}
+    op: integer
+        The opcode of this message
+    d: object
+        An optional payload of data included with this message
 
-1 ; m->s ; ready / authenticated
-{
-	"op": 1
-}
+Bot -> Host:
+------------
 
-2 ; m->s ; goodbye bad auth
-{
-	"op": 2
-}
+[0]: Identify Packet
+
+    key: string
+        The secret passphrase used for authentication
+    min: integer
+        The beginning of the shard range handled by this bot
+    max: integer
+        The end of the shard range handled by this
+
+[3]: Summons
+
+    op: integer
+        The opcode of the outgoing request
+    param: object
+        An optional payload of data to be included in the outgoing request
+
+    ** The data in this message is effectively the same packet that will be sent to
+       connected bots.
+
+[5]: General Response
+
+[7]: Status Response
+
+    id: string
+        The unique identifier for the original request, as included in the request
+    guilds: [integer, integer]
+        The number of guilds on each shard, keyed by shard id
+    voice: [integer, integer]
+        The number of voice connections on each shard, keyed by shard id
+
+
+Host -> Bot:
+------------
+
+[1]: Authenticated
+
+[2]: Authentication Rejected
+
+[4]: General Request
+
+    type: string
+        The type of data to be requested
+
+        This value should be one of:
+            - 'todo'
+
+[6]: Status Request
+
+    id: string
+        The unique identifier for this request - should be included in the response
+
+[8]: Status Answer
+    The answer to a [6] Status Request, sent only to the bot who initiated the request.
+
+    ** The payload for this message is the same as a [7] Status Response, without the id
+
+[99]: Invalid request
+    The opcode sent was not recognized

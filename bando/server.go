@@ -4,7 +4,10 @@ import (
 	"encoding/json"
 	"log"
 	"net"
+	"time"
 )
+
+var state State
 
 func serve() {
 	ln, err := net.Listen("tcp", conf.Host)
@@ -13,6 +16,7 @@ func serve() {
 	}
 	defer ln.Close();
 	log.Println("Listening on", conf.Host)
+	state = State{}
 	for {
 		sock, err := ln.Accept()
 		if err != nil {
@@ -28,6 +32,11 @@ func requestLoop(conn net.Conn) {
 	for {
 		buf := make([]byte, 1024)
 		n, err := conn.Read(buf)
+		if n == 0 {
+			// no data in socket, check later
+			time.Sleep(500 * time.Millisecond)
+			continue
+		}
 		if err != nil {
 			conn.Close()
 			log.Println("read err")
