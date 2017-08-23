@@ -15,9 +15,9 @@ Bot -> Host:
 
     key: string
         The secret passphrase used for authentication
-    min: integer
+    min: unsigned integer
         The beginning of the shard range handled by this bot
-    max: integer
+    max: unsigned integer
         The end of the shard range handled by this
 
 [3]: Summons
@@ -30,17 +30,20 @@ Bot -> Host:
     ** The data in this message is effectively the same packet that will be sent to
        connected bots.
 
-[5]: General Response
-
 [7]: Status Response
 
     id: string
         The unique identifier for the original request, as included in the request
-    guilds: [integer, integer]
+    guilds: [unsigned integer, unsigned integer]
         The number of guilds on each shard, keyed by shard id
-    voice: [integer, integer]
+    voice: [unsigned integer, unsigned integer]
         The number of voice connections on each shard, keyed by shard id
+    state: unsigned integer
+        The JDA connection state of this shard
 
+[51]: Restarted OK
+
+[52]: Restart Failed
 
 Host -> Bot:
 ------------
@@ -49,15 +52,8 @@ Host -> Bot:
 
 [2]: Authentication Rejected
 
-[4]: General Request
-
-    type: string
-        The type of data to be requested
-
-        This value should be one of:
-            - 'todo'
-
 [6]: Status Request
+    Requests analytical information from the bot
 
     id: string
         The unique identifier for this request - should be included in the response
@@ -66,6 +62,15 @@ Host -> Bot:
     The answer to a [6] Status Request, sent only to the bot who initiated the request.
 
     ** The payload for this message is the same as a [7] Status Response, without the id
+
+[50]: Restart All Shards
+
+[53]: Rolling Restart
+
+    id: string
+        The unique identifier for this request
+    block_size: integer
+        The number of shards to be restarted at once
 
 [99]: Invalid request
     The opcode sent was not recognized

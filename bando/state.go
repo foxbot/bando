@@ -3,15 +3,15 @@ package bando
 import "net"
 
 type Bot struct {
-	Lower int
-	Upper int
+	Lower uint
+	Upper uint
 }
 
 type SummonsState struct {
 	Origin net.Conn
 	Responses int
-	Guilds map[int]int
-	Voice map[int]int
+	Guilds map[uint]uint
+	Voice map[uint]uint
 }
 
 type State struct {

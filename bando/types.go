@@ -9,8 +9,8 @@ type Message struct {
 type Identify struct {
 	Key string
 	Bot bool
-	Min int
-	Max int
+	Min uint
+	Max uint
 }
 
 type Summons struct {
@@ -20,8 +20,9 @@ type Summons struct {
 
 type StatusResp struct {
 	Id string
-	Guilds map[int]int
-	Voice map[int]int
+	Guilds map[uint]uint
+	Voice map[uint]uint
+	State uint
 }
 
 // send
