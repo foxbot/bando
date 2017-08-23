@@ -36,7 +36,7 @@ func handleMessage(conn net.Conn, m Message) {
 			closeErr(err, conn)
 			return
 		}
-		doSummons(conn, s)
+		go doSummons(conn, s)
 	case 6:
 		var r StatusResp
 		err := mapstructure.Decode(m.Data, &r)
