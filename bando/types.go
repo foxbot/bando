@@ -2,7 +2,7 @@ package bando
 
 type Message struct {
 	Op int
-	Data interface{} `json:"d"`
+	Data interface{}
 }
 
 // receive

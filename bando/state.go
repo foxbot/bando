@@ -18,3 +18,10 @@ type State struct {
 	Bots map[net.Conn]Bot
 	Summons map[string]SummonsState
 }
+
+func NewState() State {
+	return State{
+		Bots: make(map[net.Conn]Bot),
+		Summons: make(map[string]SummonsState),
+	}
+}

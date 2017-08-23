@@ -16,7 +16,7 @@ func serve() {
 	}
 	defer ln.Close();
 	log.Println("Listening on", conf.Host)
-	state = State{}
+	state = NewState()
 	for {
 		sock, err := ln.Accept()
 		if err != nil {
