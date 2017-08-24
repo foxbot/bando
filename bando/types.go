@@ -1,32 +1,32 @@
 package bando
 
 type Message struct {
-	Op int
-	Data interface{}
+	Op int `json:"op"`
+	Data interface{} `json:"data"`
 }
 
 // receive
 type Identify struct {
-	Key string
-	Bot bool
-	Min uint
-	Max uint
+	Key string `json:"key"`
+	Bot bool `json:"bot"`
+	Min uint `json:"min"`
+	Max uint `json:"max"`
 }
 
 type Summons struct {
-	Op int
-	Data interface{}
+	Op int `json:"op"`
+	Data interface{} `json:"data"`
 }
 
 type StatusResp struct {
-	Id string
-	Guilds map[uint]uint
-	Voice map[uint]uint
-	State uint
+	Id string `json:"id"`
+	Guilds map[uint]uint `json:"guilds"`
+	Voice map[uint]uint `json:"voice"`
+	State uint `json:"state"`
 }
 
 // send
 
 type StatusReq struct {
-	Id string
+	Id string `json:"id"`
 }

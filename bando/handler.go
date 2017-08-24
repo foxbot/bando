@@ -103,7 +103,7 @@ func sendResp(conn net.Conn, resp Message) {
 		log.Println(err)
 		conn.Close()
 	}
-	_, err = conn.Write(bytes)
+	_, err = conn.Write([]byte(string(bytes) + "\n"))
 	if err != nil {
 		log.Println(err)
 		conn.Close()
