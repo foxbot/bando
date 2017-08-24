@@ -8,20 +8,20 @@ type Bot struct {
 }
 
 type SummonsState struct {
-	Origin net.Conn
+	Origin    net.Conn
 	Responses int
-	Guilds map[uint]uint
-	Voice map[uint]uint
+	Guilds    map[uint]uint
+	Voice     map[uint]uint
 }
 
 type State struct {
-	Bots map[net.Conn]Bot
+	Bots    map[net.Conn]Bot
 	Summons map[string]SummonsState
 }
 
 func NewState() State {
 	return State{
-		Bots: make(map[net.Conn]Bot),
+		Bots:    make(map[net.Conn]Bot),
 		Summons: make(map[string]SummonsState),
 	}
 }

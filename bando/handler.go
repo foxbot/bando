@@ -10,7 +10,7 @@ import (
 
 func handleMessage(conn net.Conn, m Message) {
 	switch m.Op {
-	case 0:
+	case OpcodeIdentify:
 		var i Identify
 		err := mapstructure.Decode(m.Data, &i)
 		if err != nil {
@@ -19,17 +19,17 @@ func handleMessage(conn net.Conn, m Message) {
 			log.Println("rejected connection from", conn.RemoteAddr().String(), "-", err)
 		}
 		if i.Key != conf.Key {
-			resp := Message { Op: 2 }
+			resp := Message{Op: OpcodeAuthenticationRejected}
 			sendResp(conn, resp)
 			conn.Close()
 			log.Println("rejected connection from", conn.RemoteAddr().String(), "- invalid key")
 		} else if i.Key == conf.Key {
-			resp := Message{Op: 1 }
+			resp := Message{Op: OpcodeAuthenticated}
 			sendResp(conn, resp)
 			log.Println("accepted connection from", conn.RemoteAddr().String())
-			state.Bots[conn] = Bot{Lower: i.Min, Upper: i.Max }
+			state.Bots[conn] = Bot{Lower: i.Min, Upper: i.Max}
 		}
-	case 3:
+	case OpcodeSummons:
 		var s Summons
 		err := mapstructure.Decode(m.Data, &s)
 		if err != nil {
@@ -37,7 +37,7 @@ func handleMessage(conn net.Conn, m Message) {
 			return
 		}
 		go doSummons(conn, s)
-	case 6:
+	case OpcodeStatusRequest:
 		var r StatusResp
 		err := mapstructure.Decode(m.Data, &r)
 		if err != nil {
@@ -46,7 +46,7 @@ func handleMessage(conn net.Conn, m Message) {
 		}
 		handleStatusResp(r)
 	default:
-		resp := Message { Op: 99 }
+		resp := Message{Op: OpcodeInvalidRequest}
 		sendResp(conn, resp)
 	}
 }
@@ -54,19 +54,19 @@ func handleMessage(conn net.Conn, m Message) {
 func doSummons(conn net.Conn, s Summons) {
 	key := randString(10)
 	var req interface{}
-	switch s.Op{
-	case 6:
+	switch s.Op {
+	case OpcodeStatusRequest:
 		req = StatusReq{
 			Id: key,
 		}
 	default:
 		return
 	}
-	state.Summons[key] = SummonsState{Origin:conn}
+	state.Summons[key] = SummonsState{Origin: conn}
 
-	for k := range state.Bots{
+	for k := range state.Bots {
 		m := Message{
-			Op: s.Op,
+			Op:   s.Op,
 			Data: req,
 		}
 		sendResp(k, m)
@@ -87,10 +87,10 @@ func handleStatusResp(resp StatusResp) {
 	if summons.Responses == len(state.Bots) {
 		r := StatusResp{
 			Guilds: summons.Guilds,
-			Voice: summons.Voice,
+			Voice:  summons.Voice,
 		}
 		m := Message{
-			Op: 8,
+			Op:   OpcodeStatusAnswer,
 			Data: r,
 		}
 		sendResp(summons.Origin, m)

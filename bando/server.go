@@ -14,7 +14,7 @@ func serve() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer ln.Close();
+	defer ln.Close()
 	log.Println("Listening on", conf.Host)
 	state = NewState()
 	for {
