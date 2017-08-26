@@ -38,7 +38,7 @@ type StatusResp struct {
 	Id     string        `json:"id"`
 	Guilds map[uint]uint `json:"guilds"`
 	Voice  map[uint]uint `json:"voice"`
-	State  uint          `json:"state"`
+	States map[uint]uint `json:"states"`
 }
 
 // send

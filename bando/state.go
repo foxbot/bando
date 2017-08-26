@@ -12,6 +12,7 @@ type SummonsState struct {
 	Responses int
 	Guilds    map[uint]uint
 	Voice     map[uint]uint
+	States    map[uint]uint
 }
 
 type State struct {

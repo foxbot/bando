@@ -77,17 +77,21 @@ func handleStatusResp(resp StatusResp) {
 	summons := state.Summons[resp.Id]
 	summons.Responses++
 
-	for shard, guilds := range resp.Guilds {
-		summons.Guilds[shard] = guilds
+	for shard, guild := range resp.Guilds {
+		summons.Guilds[shard] = guild
 	}
 	for shard, voice := range resp.Voice {
 		summons.Voice[shard] = voice
+	}
+	for shard, state := range resp.States {
+		summons.States[shard] = state
 	}
 
 	if summons.Responses == len(state.Bots) {
 		r := StatusResp{
 			Guilds: summons.Guilds,
 			Voice:  summons.Voice,
+			States: summons.States,
 		}
 		m := Message{
 			Op:   OpcodeStatusAnswer,

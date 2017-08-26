@@ -38,8 +38,8 @@ Bot -> Host:
         The number of guilds on each shard, keyed by shard id
     voice: [unsigned integer, unsigned integer]
         The number of voice connections on each shard, keyed by shard id
-    state: unsigned integer
-        The JDA connection state of this shard
+    states: [unsigned integer, unsigned integer]
+        The JDA connection state of each shard, keyed by shard id
 
 [51]: Restarted OK
 
